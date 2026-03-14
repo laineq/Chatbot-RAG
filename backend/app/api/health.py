@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Request
+from fastapi.responses import JSONResponse
 
-from app.api.schemas import HealthResponse, HealthServiceStatus
-from app.db.postgres import check_postgres_health
+from app.api.schemas import HealthResponse
+from app.core.config import get_settings
+from app.core.runtime_checks import collect_health_response
 
 router = APIRouter(tags=["health"])
 
 
 @router.get("/health", response_model=HealthResponse)
 async def health_check(request: Request) -> HealthResponse:
-    postgres_ok, postgres_detail = await check_postgres_health()
-    redis_ok, redis_detail = await request.app.state.history_store.ping()
-    services = {
-        "postgres": HealthServiceStatus(ok=postgres_ok, detail=postgres_detail),
-        "redis": HealthServiceStatus(ok=redis_ok, detail=redis_detail),
-    }
-    status = "ok" if all(service.ok for service in services.values()) else "degraded"
-    return HealthResponse(status=status, services=services)
+    return await collect_health_response(request.app.state.history_store, get_settings())
 
+
+@router.get("/ready")
+async def readiness_check(request: Request) -> JSONResponse:
+    payload = await collect_health_response(request.app.state.history_store, get_settings())
+    status_code = 200 if payload.status == "ok" else 503
+    return JSONResponse(status_code=status_code, content=payload.model_dump(mode="json"))

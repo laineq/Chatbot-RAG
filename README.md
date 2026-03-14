@@ -18,6 +18,24 @@ An enterprise-leaning RAG chatbot MVP with:
 
 ## Local Setup
 
+Fastest path:
+
+1. Run the preflight:
+   - `make preflight`
+2. Start infrastructure:
+   - `make infra-up`
+3. Install dependencies:
+   - `make backend-install`
+   - `make frontend-install`
+4. Run migrations and seed data:
+   - `make migrate`
+   - `make seed`
+5. Start the apps:
+   - `make backend-dev`
+   - `make frontend-dev`
+
+Detailed path:
+
 1. Copy environment defaults:
    - `cp .env.example .env`
 2. Start infrastructure:
@@ -48,12 +66,17 @@ The frontend expects the backend at `http://localhost:8000` by default. Override
 - Frontend:
   - `cd frontend && npm run lint`
   - `cd frontend && npm run build`
+  - `cd frontend && npm run test`
 - Backend:
   - `cd backend && uv run pytest`
+
+## Runtime Status
+
+- `GET /health` returns infrastructure state, setup checks, and knowledge-base readiness.
+- `GET /ready` returns `200` only when the local seeded demo path is ready. Otherwise it returns `503` with the same payload.
 
 ## Notes
 
 - This MVP intentionally excludes file upload, hybrid retrieval, reranking, auth, and agent/tool workflows.
 - Real database-backed integration flows require PostgreSQL, Redis, Docker Desktop, and a valid `OPENAI_API_KEY`.
 - The architecture summary lives in [docs/architecture.md](/Users/zjohn/Public/chatbot/docs/architecture.md).
-

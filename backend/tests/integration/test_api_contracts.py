@@ -8,8 +8,12 @@ from app.api.schemas import (
     ChatResponse,
     Citation,
     FeedbackResponse,
+    HealthResponse,
+    HealthServiceStatus,
+    KnowledgeBaseStatus,
     MessageView,
     SessionResponse,
+    SetupCheckStatus,
 )
 from app.db.postgres import get_db_session
 
@@ -66,6 +70,26 @@ async def override_db_session():
     yield object()
 
 
+async def fake_collect_health_response():
+    return HealthResponse(
+        status="ok",
+        services={
+            "postgres": HealthServiceStatus(ok=True, detail="reachable"),
+            "redis": HealthServiceStatus(ok=True, detail="reachable"),
+        },
+        setup_checks={
+            "python_version": SetupCheckStatus(ok=True, detail="Running Python 3.11.15", required=True),
+        },
+        knowledge_base=KnowledgeBaseStatus(
+            seeded=True,
+            document_count=3,
+            chunk_count=12,
+            detail="Knowledge base ready with 3 documents and 12 chunks.",
+        ),
+        warnings=[],
+    )
+
+
 def create_test_app(monkeypatch) -> FastAPI:  # noqa: ANN001
     app = FastAPI()
     app.include_router(chat_router)
@@ -78,7 +102,7 @@ def create_test_app(monkeypatch) -> FastAPI:  # noqa: ANN001
     async def fake_postgres_health():
         return True, "reachable"
 
-    monkeypatch.setattr("app.api.health.check_postgres_health", fake_postgres_health)
+    monkeypatch.setattr("app.api.health.collect_health_response", lambda history_store, settings: fake_collect_health_response())
     return app
 
 
@@ -131,3 +155,14 @@ def test_health_endpoint_contract(monkeypatch) -> None:
     assert payload["status"] == "ok"
     assert payload["services"]["postgres"]["ok"] is True
     assert payload["services"]["redis"]["ok"] is True
+    assert payload["knowledge_base"]["seeded"] is True
+
+
+def test_ready_endpoint_contract(monkeypatch) -> None:
+    app = create_test_app(monkeypatch)
+
+    with TestClient(app) as client:
+        response = client.get("/ready")
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "ok"

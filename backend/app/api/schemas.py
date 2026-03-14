@@ -58,7 +58,22 @@ class HealthServiceStatus(BaseModel):
     detail: str
 
 
+class SetupCheckStatus(BaseModel):
+    ok: bool
+    detail: str
+    required: bool = True
+
+
+class KnowledgeBaseStatus(BaseModel):
+    seeded: bool
+    document_count: int | None = None
+    chunk_count: int | None = None
+    detail: str
+
+
 class HealthResponse(BaseModel):
     status: Literal["ok", "degraded"]
     services: dict[str, HealthServiceStatus]
-
+    setup_checks: dict[str, SetupCheckStatus] = Field(default_factory=dict)
+    knowledge_base: KnowledgeBaseStatus
+    warnings: list[str] = Field(default_factory=list)
