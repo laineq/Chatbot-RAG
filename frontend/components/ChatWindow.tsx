@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useEffectEvent, useRef, useState, useTransition } from "react";
 
 import { CitationPanel } from "@/components/CitationPanel";
@@ -323,6 +324,14 @@ export function ChatWindow() {
                 </p>
               </div>
             </div>
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Link
+              href="/analytics"
+              className="rounded-full border border-black/10 bg-[color:var(--paper)] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-[color:var(--ink-soft)] transition hover:border-[color:var(--accent)] hover:text-[color:var(--ink)]"
+            >
+              View analytics
+            </Link>
           </div>
         </header>
 

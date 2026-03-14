@@ -16,4 +16,4 @@ Next.js chat interface for the enterprise RAG chatbot MVP.
 - Sends prompts to `POST /chat`
 - Displays route badges, citations, and feedback controls
 - Submits thumbs feedback to `POST /feedback`
-
+- Includes an analytics dashboard at `/analytics` backed by `GET /analytics/overview`

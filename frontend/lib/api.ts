@@ -1,4 +1,5 @@
 import type {
+  AnalyticsOverviewResponse,
   ChatRequest,
   ChatResponse,
   FeedbackRequest,
@@ -64,7 +65,10 @@ export const chatApi = {
   getHealth() {
     return request<HealthResponse>("/health");
   },
+
+  getAnalyticsOverview() {
+    return request<AnalyticsOverviewResponse>("/analytics/overview");
+  },
 };
 
 export { ApiError };
-

@@ -2,9 +2,12 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from app.api.chat import router as chat_router
+from app.api.analytics import router as analytics_router
 from app.api.feedback import router as feedback_router
 from app.api.health import router as health_router
 from app.api.schemas import (
+    AnalyticsOverviewResponse,
+    AnalyticsSummary,
     ChatResponse,
     Citation,
     FeedbackResponse,
@@ -66,6 +69,30 @@ class DummyHistoryStore:
         return True, "reachable"
 
 
+class DummyAnalyticsService:
+    async def get_overview(self, db_session):  # noqa: ANN001
+        return AnalyticsOverviewResponse(
+            summary=AnalyticsSummary(
+                total_sessions=2,
+                total_messages=8,
+                total_requests=4,
+                total_feedback=1,
+                negative_feedback=0,
+                average_latency_ms=142.5,
+                fallback_requests=1,
+                refusal_requests=0,
+                seeded_documents=3,
+                total_chunks=12,
+            ),
+            route_breakdown=[{"label": "rag", "count": 3}, {"label": "fallback", "count": 1}],
+            risk_breakdown=[{"label": "low", "count": 4}],
+            feedback_breakdown=[{"label": "up", "count": 1}],
+            reason_breakdown=[{"label": "knowledge_keyword", "count": 3}],
+            top_sources=[{"label": "Travel Policy", "count": 3}],
+            recent_requests=[],
+        )
+
+
 async def override_db_session():
     yield object()
 
@@ -92,11 +119,13 @@ async def fake_collect_health_response():
 
 def create_test_app(monkeypatch) -> FastAPI:  # noqa: ANN001
     app = FastAPI()
+    app.include_router(analytics_router)
     app.include_router(chat_router)
     app.include_router(feedback_router)
     app.include_router(health_router)
     app.state.chat_service = DummyChatService()
     app.state.history_store = DummyHistoryStore()
+    app.state.analytics_service = DummyAnalyticsService()
     app.dependency_overrides[get_db_session] = override_db_session
 
     async def fake_postgres_health():
@@ -166,3 +195,16 @@ def test_ready_endpoint_contract(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
+
+
+def test_analytics_overview_contract(monkeypatch) -> None:
+    app = create_test_app(monkeypatch)
+
+    with TestClient(app) as client:
+        response = client.get("/analytics/overview")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["summary"]["total_requests"] == 4
+    assert payload["route_breakdown"][0]["label"] == "rag"
+    assert payload["top_sources"][0]["label"] == "Travel Policy"

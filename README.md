@@ -75,6 +75,11 @@ The frontend expects the backend at `http://localhost:8000` by default. Override
 - `GET /health` returns infrastructure state, setup checks, and knowledge-base readiness.
 - `GET /ready` returns `200` only when the local seeded demo path is ready. Otherwise it returns `503` with the same payload.
 
+## Observability
+
+- `GET /analytics/overview` exposes request volume, route mix, feedback, reason codes, top retrieved sources, and recent request traces.
+- The frontend analytics dashboard is available at `/analytics`.
+
 ## Notes
 
 - This MVP intentionally excludes file upload, hybrid retrieval, reranking, auth, and agent/tool workflows.

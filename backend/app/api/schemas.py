@@ -77,3 +77,43 @@ class HealthResponse(BaseModel):
     setup_checks: dict[str, SetupCheckStatus] = Field(default_factory=dict)
     knowledge_base: KnowledgeBaseStatus
     warnings: list[str] = Field(default_factory=list)
+
+
+class MetricCount(BaseModel):
+    label: str
+    count: int
+
+
+class RecentRequestMetric(BaseModel):
+    request_id: str
+    session_id: str
+    route: str
+    risk_level: str
+    reason_code: str | None = None
+    latency_ms: int
+    created_at: datetime
+    retrieved_chunk_count: int = 0
+    top_score: float | None = None
+
+
+class AnalyticsSummary(BaseModel):
+    total_sessions: int
+    total_messages: int
+    total_requests: int
+    total_feedback: int
+    negative_feedback: int
+    average_latency_ms: float | None = None
+    fallback_requests: int
+    refusal_requests: int
+    seeded_documents: int
+    total_chunks: int
+
+
+class AnalyticsOverviewResponse(BaseModel):
+    summary: AnalyticsSummary
+    route_breakdown: list[MetricCount] = Field(default_factory=list)
+    risk_breakdown: list[MetricCount] = Field(default_factory=list)
+    feedback_breakdown: list[MetricCount] = Field(default_factory=list)
+    reason_breakdown: list[MetricCount] = Field(default_factory=list)
+    top_sources: list[MetricCount] = Field(default_factory=list)
+    recent_requests: list[RecentRequestMetric] = Field(default_factory=list)
