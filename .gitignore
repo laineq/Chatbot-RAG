@@ -2,6 +2,8 @@
 .env
 .env.local
 .env.*.local
+api
+api.rtf
 .pytest_cache/
 .ruff_cache/
 .venv/
@@ -17,3 +19,4 @@ frontend/node_modules/
 frontend/.vercel/
 coverage/
 dist/
+.README.md.swp

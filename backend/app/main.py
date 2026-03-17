@@ -13,11 +13,11 @@ from app.api.feedback import router as feedback_router
 from app.api.health import router as health_router
 from app.core.config import get_settings
 from app.core.logger import configure_logging
-from app.llm.client import OpenAILLMClient
+from app.llm.client import LLMClient
 from app.memory.redis_history import RedisHistoryStore
 from app.orchestrator.chat_service import ChatService
 from app.orchestrator.prompt_builder import PromptBuilder
-from app.rag.embeddings import OpenAIEmbeddingService
+from app.rag.embeddings import EmbeddingService
 from app.rag.retriever import RAGRetriever
 
 
@@ -27,8 +27,8 @@ async def lifespan(app: FastAPI):
     configure_logging(settings.log_level)
 
     history_store = RedisHistoryStore(settings.redis_url, max_messages=settings.memory_max_messages)
-    llm_client = OpenAILLMClient(settings)
-    embedding_service = OpenAIEmbeddingService(settings)
+    llm_client = LLMClient(settings)
+    embedding_service = EmbeddingService(settings)
     retriever = RAGRetriever(embedding_service, top_k=settings.retrieval_top_k)
     prompt_builder = PromptBuilder(settings.prompt_dir)
 

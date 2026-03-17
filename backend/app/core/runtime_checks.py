@@ -68,7 +68,12 @@ async def collect_health_response(history_store, settings: Settings) -> HealthRe
             detail=f"Running Python {sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
             required=True,
         ),
-        "openai_api_key": _optional_check(bool(settings.openai_api_key), "OPENAI_API_KEY configured" if settings.openai_api_key else "OPENAI_API_KEY is not set."),
+        "ai_provider": _optional_check(
+            bool(settings.resolved_provider_credentials),
+            f"{settings.resolved_model_provider.title()} API key configured via {settings.resolved_provider_credentials.source}"
+            if settings.resolved_provider_credentials and settings.resolved_model_provider
+            else "No supported AI API key is set in the environment or local api file.",
+        ),
         "general_prompt": _required_file_check(settings.prompt_dir / "general_v1.txt", "General prompt found"),
         "rag_prompt": _required_file_check(settings.prompt_dir / "rag_answer_v1.txt", "RAG prompt found"),
         "seed_docs_path": _required_file_check(settings.knowledge_base_path, "Seed docs directory found"),

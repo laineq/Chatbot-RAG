@@ -20,7 +20,7 @@ from app.core.logger import get_logger
 from app.db.models import FeedbackRecord, MessageRecord, RequestLogRecord, RetrievalLogRecord, SessionRecord
 from app.guardrails.input_guard import InputGuardError, inspect_message, validate_chat_payload
 from app.guardrails.output_guard import build_fallback_answer, build_refusal_answer, enforce_output_guardrails
-from app.llm.client import OpenAILLMClient
+from app.llm.client import LLMClient, ProviderError
 from app.memory.redis_history import RedisHistoryStore
 from app.orchestrator.prompt_builder import PromptBuilder
 from app.orchestrator.router import decide_route
@@ -35,7 +35,7 @@ class ChatService:
         *,
         settings: Settings,
         history_store: RedisHistoryStore,
-        llm_client: OpenAILLMClient,
+        llm_client: LLMClient,
         retriever: RAGRetriever,
         prompt_builder: PromptBuilder,
     ) -> None:
@@ -134,10 +134,14 @@ class ChatService:
                     route = output_decision.route
                     answer = output_decision.answer
                     reason_code = output_decision.reason_code or reason_code
-            except RuntimeError as exc:
+            except ProviderError as exc:
                 logger.warning("provider unavailable: %s", exc)
                 route = "fallback"
-                answer = "The assistant is not fully configured yet. Set OPENAI_API_KEY to enable retrieval and generation."
+                answer = (
+                    "The assistant is not fully configured yet. Set a valid OPENAI_API_KEY or GEMINI_API_KEY "
+                    "in the environment, or place a supported key in ./api or ./api.rtf to enable retrieval "
+                    "and generation."
+                )
                 reason_code = "provider_unavailable"
 
         await self._persist_chat(
@@ -269,4 +273,4 @@ class ChatService:
         session = await db_session.get(SessionRecord, session_id)
         if session is None:
             db_session.add(SessionRecord(session_id=session_id))
-
+            await db_session.flush()

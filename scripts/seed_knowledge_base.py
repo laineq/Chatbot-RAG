@@ -11,13 +11,13 @@ if str(BACKEND_DIR) not in sys.path:
 from app.core.config import get_settings
 from app.db.postgres import get_sessionmaker
 from app.rag.chunker import MarkdownChunker
-from app.rag.embeddings import OpenAIEmbeddingService
+from app.rag.embeddings import EmbeddingService
 from app.rag.ingestion_seed import ingest_seed_documents
 
 
 async def main() -> None:
     settings = get_settings()
-    embedding_service = OpenAIEmbeddingService(settings)
+    embedding_service = EmbeddingService(settings)
     chunker = MarkdownChunker()
 
     async with get_sessionmaker()() as db_session:
@@ -32,4 +32,3 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
-
