@@ -17,20 +17,6 @@ Built with a FastAPI backend, Next.js frontend, Redis memory, and PostgreSQL + p
 
 ---
 
-##  System Architecture
-
-User → Next.js Chat UI → FastAPI Orchestrator
-↓
-Routing & Guardrails
-↓
-Retrieval (Postgres + pgvector)
-↓
-LLM (OpenAI)
-↓
-Memory (Redis) + Analytics
-
----
-
 ## Key Features
 
 ### RAG Pipeline
@@ -74,7 +60,7 @@ Memory (Redis) + Analytics
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend:** Next.js, TypeScript  
 - **Backend:** FastAPI (Python)  
