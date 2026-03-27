@@ -1,4 +1,4 @@
-# Enterprise RAG Chatbot
+# RAG Chatbot （Ongoing)
 
 An enterprise-leaning Retrieval-Augmented Generation chatbot built as a local-demo-first full-stack project. It combines a Next.js chat interface with a FastAPI orchestration backend, Redis-backed conversation memory, PostgreSQL + `pgvector` retrieval, OpenAI generation, rule-based guardrails, citations, feedback collection, and an analytics dashboard.
 
@@ -11,35 +11,6 @@ An enterprise-leaning Retrieval-Augmented Generation chatbot built as a local-de
 - Refuses prompt-injection and hidden-prompt requests
 - Falls back safely when evidence is weak
 - Logs requests, routes, retrieval results, and feedback for analysis
-
-## User Instructions
-
-### Local setup
-
-Fastest path:
-
-1. `make preflight`
-2. `make infra-up`
-3. `make backend-install`
-4. `make frontend-install`
-5. `make migrate`
-6. `make seed`
-7. `make backend-dev`
-8. `make frontend-dev`
-
-Manual path:
-
-1. `cp .env.example .env`
-2. `docker compose up -d`
-3. `cd backend && uv sync --extra dev`
-4. `cd backend && uv run alembic upgrade head`
-5. `cd backend && uv run python ../scripts/seed_knowledge_base.py`
-6. `cd backend && uv run uvicorn app.main:app --reload`
-7. `cd frontend && npm install && npm run dev`
-
-Default frontend API target:
-
-- `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000`
 
 ### Chat experience
 
