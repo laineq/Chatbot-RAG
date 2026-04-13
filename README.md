@@ -89,14 +89,14 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 - average Precision@k  
 - average Faithfulness score  
 
-## 🧠 Memory
+## Memory
 
 - Redis-based short-term conversation memory  
 - Supports multi-turn, context-aware interactions  
 
 ---
 
-## 🔒 Guardrails & Safety
+## Guardrails & Safety
 
 - Prompt injection detection  
 - System prompt protection  
@@ -104,7 +104,7 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 
 ---
 
-## 📈 Analytics & Observability
+## Analytics & Observability
 
 - Request logging and tracing  
 
@@ -116,7 +116,7 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 
 ---
 
-## 💡 Example Use Cases
+## Example Use Cases
 
 **Internal knowledge queries:**
 - "What is the travel reimbursement policy?"  
@@ -135,7 +135,7 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 - **Frontend:** Next.js, TypeScript  
 - **Backend:** FastAPI (Python)  
@@ -147,13 +147,13 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 
 ---
 
-## 📦 Current Scope
+## Current Scope
 
 ### ✅ Implemented
 
 - End-to-end RAG pipeline  
 - Query rewriting (LLM-based)  
-- Conditional routing (local / web / hybrid)  
+- Conditional routing (local / web/hybrid)  
 - Lightweight reranking  
 - Tavily web fallback  
 - Multi-turn chat with memory  
