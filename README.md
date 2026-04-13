@@ -68,11 +68,8 @@ Supports:
 
 ## RAG Evaluation
 
-A lightweight evaluation module is included in:
+A lightweight evaluation module is included in the folder: rag-evaluation/
 
-```bash
-rag-evaluation/
-```
 ## metrics 
 ### Precision@k
 - Measures retrieval quality  
