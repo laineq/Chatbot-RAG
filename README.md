@@ -166,7 +166,8 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 
 ### 🚧 Future Work
 
-- Better routing confidence scoring  
+- Better routing confidence scoring
+- refine front-end 
 - Multi-hop retrieval  
 - SQL agent integration  
 - Stronger hallucination detection  
