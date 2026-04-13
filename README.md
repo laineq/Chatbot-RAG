@@ -72,7 +72,7 @@ A lightweight evaluation module is included in:
 
 ```bash
 rag-evaluation/
-
+```
 ## metrics 
 ### Precision@k
 - Measures retrieval quality  
