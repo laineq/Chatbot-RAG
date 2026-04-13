@@ -174,3 +174,7 @@ A lightweight evaluation module is included in the folder: rag-evaluation/
 - Automated evaluation benchmarks  
 
 ---
+
+### Data Sources
+- Seeded internal HR policy documents  
+- Public clinical content from MedlinePlus  
